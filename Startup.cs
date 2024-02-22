@@ -35,10 +35,17 @@ namespace TodoApi
                     Mode = RetryMode.Exponential
                 }
             };
-            var client = new SecretClient(new Uri("https://myKeyVault2224.vault.azure.net/"), new DefaultAzureCredential(), options);            
-            KeyVaultSecret secret = client.GetSecret("AppSecret");            
-            string secretValue = secret.Value;
-            
+            string secretValue = "NoSecret";
+            try
+            {
+               var client = new SecretClient(new Uri("https://myKeyVault2224.vault.azure.net/"), new DefaultAzureCredential(), options);            
+               KeyVaultSecret secret = client.GetSecret("AppSecret");            
+               secretValue = secret.Value;
+            }
+            catch (Exception ex)
+            {
+               Console.WriteLine($"Error reading secret. Message:{ex.Message}");
+            }
             services.AddControllers();
 
             // Register the Swagger generator, defining 1 or more Swagger documents
